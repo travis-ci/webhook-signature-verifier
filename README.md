@@ -13,9 +13,10 @@ for the `payload` data.
 
 This small Sinatra app shows how to verify the signature.
 
-## How to verify the signature
+## Verifying the signature
 
 1. Pick up the `payload` data from the HTTP request's body.
 1. Obtain the `Signature` header value
 1. Obtain the public key corresponding to the private key that signed the
   payload. This is available at the `/config` endpoint's `config.notifications.webhook.public_key`.
+1. Verify the signature using the public key and SHA1 digest.
