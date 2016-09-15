@@ -33,7 +33,8 @@ module WebhookSignatureVerifier
 
     post '/verify' do
       begin
-        payload      = request_body.fetch('payload', '')
+        json_payload      = request_body.fetch('payload', '')
+        payload = JSON.parse(json_payload)
         signature    = request.env["HTTP_SIGNATURE"]
 
         pkey = OpenSSL::PKey::RSA.new(public_key)
@@ -60,7 +61,7 @@ module WebhookSignatureVerifier
     end
 
     def request_body
-      JSON.parse(request.body.read)
+      request.body.read
     end
 
     def public_key
