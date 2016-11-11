@@ -4,7 +4,7 @@ A small Sinatra app to verify the webhook payload signature
 
 ## Description
 
-Travis CI's [webhook notification](https://docs.travis-ci.com/user/notifications/#Webhook-notification)
+Travis CI's [webhook notification](https://docs.travis-ci.com/user/notifications/#Webhook-notifications)
 delivers a POST request to the specified endpoint a JSON payload as
 described.
 
