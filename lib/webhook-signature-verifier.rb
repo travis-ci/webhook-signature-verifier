@@ -7,6 +7,10 @@ require 'base64'
 
 module WebhookSignatureVerifier
   class App < Sinatra::Base
+    # Use one of the following depending on the platform that is sending
+    #   the webhook:
+    # https://api.travis-ci.org
+    # https://api.travis-ci.com
     DEFAULT_API_HOST = 'https://api.travis-ci.org'
     API_HOST = ENV.fetch('API_HOST', DEFAULT_API_HOST)
 
@@ -33,8 +37,7 @@ module WebhookSignatureVerifier
 
     post '/verify' do
       begin
-        json_payload      = request_body.fetch('payload', '')
-        payload = JSON.parse(json_payload)
+        json_payload = params.fetch('payload', '')
         signature    = request.env["HTTP_SIGNATURE"]
 
         pkey = OpenSSL::PKey::RSA.new(public_key)
@@ -42,7 +45,7 @@ module WebhookSignatureVerifier
         if pkey.verify(
             OpenSSL::Digest::SHA1.new,
             Base64.decode64(signature),
-            payload.to_json
+            json_payload
           )
           status 200
           "verification succeeded"
@@ -58,10 +61,6 @@ module WebhookSignatureVerifier
         status 500
         "exception encountered while verifying signature"
       end
-    end
-
-    def request_body
-      request.body.read
     end
 
     def public_key
